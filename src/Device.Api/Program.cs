@@ -1,5 +1,6 @@
 using Device.Api.Handlers;
 using Device.Application.Interfaces;
+using Device.Application.Services;
 using Device.Infrastructure.Persistence;
 using Device.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -34,6 +35,7 @@ builder.Services.AddHealthChecks()
         builder.Configuration.GetConnectionString("DefaultConnection"));
 
 builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+builder.Services.AddScoped<DeviceService>();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -47,6 +49,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapControllers();
 app.MapHealthChecks("/health");
 app.UseHttpsRedirection();
 app.Run();
