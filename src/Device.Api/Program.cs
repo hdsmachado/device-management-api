@@ -29,7 +29,14 @@ builder.Services.AddDbContext<DeviceDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddHealthChecks()
+    .AddNpgSql(
+        builder.Configuration.GetConnectionString("DefaultConnection"));
+
 builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 var app = builder.Build();
 
@@ -40,5 +47,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapHealthChecks("/health");
 app.UseHttpsRedirection();
 app.Run();
