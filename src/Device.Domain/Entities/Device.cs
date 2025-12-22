@@ -11,6 +11,8 @@ public class Device
     public DeviceState State { get; private set; }
     public DateTime CreatedAt { get; private set; }
 
+    // EF Core requirement
+    private Device() { }
 
     public Device(string name, string brand, DeviceState state)
     {
@@ -37,16 +39,16 @@ public class Device
     public void UpdatePartial(string? name, string? brand, DeviceState? state)
     {
         if (State == DeviceState.InUse &&
-            (name is not null || brand is not null))
+            (!string.IsNullOrEmpty(name) || !string.IsNullOrEmpty(brand)))
         {
             throw new DeviceInUseException(
                 "Name and brand cannot be updated when the device is in use.");
         }
 
-        if (name is not null)
+        if (!string.IsNullOrEmpty(name))
             Name = name;
 
-        if (brand is not null)
+        if (!string.IsNullOrEmpty(brand))
             Brand = brand;
 
         if (state.HasValue)
